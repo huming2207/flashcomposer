@@ -48,25 +48,23 @@ fc_hal::fc_hal()
     ESP_ERROR_CHECK(gpio_set_level((gpio_num_t)CONFIG_FC_IO_RST, 1));
     vTaskDelay(pdMS_TO_TICKS(10));
 
-    spi_bus_config_t bus_config = {
-            .mosi_io_num = CONFIG_FC_SPI_MOSI,
-            .sclk_io_num = CONFIG_FC_SPI_SCLK,
-            .miso_io_num = CONFIG_FC_SPI_MISO,
-            .quadhd_io_num = -1,
-            .quadwp_io_num = -1,
-            .max_transfer_sz = 256 * 1024 * 1024 // Maybe??
-    };
+    spi_bus_config_t bus_config{};
+    bus_config.mosi_io_num = CONFIG_FC_SPI_MOSI;
+    bus_config.sclk_io_num = CONFIG_FC_SPI_SCLK;
+    bus_config.miso_io_num = CONFIG_FC_SPI_MISO;
+    bus_config.quadhd_io_num = -1;
+    bus_config.quadwp_io_num = -1;
+    bus_config.max_transfer_sz = 256 * 1024 * 1024; // Maybe??
 
-    spi_device_interface_config_t device_config = {
+    spi_device_interface_config_t device_config{};
 #ifndef CONFIG_FC_SPI_CLK_DEBUG
-            .clock_speed_hz = SPI_MASTER_FREQ_40M,
+    device_config.clock_speed_hz = SPI_MASTER_FREQ_40M;
 #else
-            .clock_speed_hz = SPI_MASTER_FREQ_8M,
+    device_config.clock_speed_hz = SPI_MASTER_FREQ_8M;
 #endif
-            .mode = 0, // CPOL = 0, CPHA = 0???
-            .spics_io_num = CONFIG_FC_SPI_CS,
-            .queue_size = 7
-    };
+    device_config.mode = 0; // CPOL = 0, CPHA = 0???
+    device_config.spics_io_num = CONFIG_FC_SPI_CS;
+    device_config.queue_size = 7;
 
     ESP_LOGI(TAG, "Performing SPI init...");
     ESP_ERROR_CHECK(spi_bus_initialize(VSPI_HOST, &bus_config, 1));
