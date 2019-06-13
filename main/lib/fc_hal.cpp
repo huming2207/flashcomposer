@@ -23,6 +23,11 @@ esp_err_t fc_hal::spi_write(const uint8_t *payload, size_t len)
     return spi_device_transmit(device_handle, &spi_tract);
 }
 
+esp_err_t fc_hal::spi_write(const uint8_t cmd)
+{
+    return spi_write(&cmd, 1);
+}
+
 esp_err_t fc_hal::spi_read(const uint8_t *tx_payload, size_t tx_len, uint8_t *rx_payload, size_t rx_len)
 {
     spi_transaction_t spi_tract;
@@ -34,6 +39,11 @@ esp_err_t fc_hal::spi_read(const uint8_t *tx_payload, size_t tx_len, uint8_t *rx
     spi_tract.rxlength = rx_len;
 
     return spi_device_transmit(device_handle, &spi_tract);
+}
+
+esp_err_t fc_hal::spi_read(const uint8_t reg, uint8_t *rx_payload, size_t rx_len)
+{
+    return spi_read(&reg, 1, rx_payload, rx_len);
 }
 
 fc_hal::fc_hal()
@@ -54,7 +64,7 @@ fc_hal::fc_hal()
     bus_config.miso_io_num = CONFIG_FC_SPI_MISO;
     bus_config.quadhd_io_num = -1;
     bus_config.quadwp_io_num = -1;
-    bus_config.max_transfer_sz = 256 * 1024 * 1024; // Maybe??
+    bus_config.max_transfer_sz = 2 * 1024 * 1024; // Maybe 2MB is enough?
 
     spi_device_interface_config_t device_config{};
 #ifndef CONFIG_FC_SPI_CLK_DEBUG
