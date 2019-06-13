@@ -3,6 +3,8 @@
 #include <cstddef>
 #include <cstdint>
 #include <string>
+#include <utility>
+#include <algorithm>
 #include <map>
 
 #include "fc_id_defs.hpp"
@@ -13,8 +15,8 @@ namespace fc
     {
         size_t full_size_kb = 0;
         uint32_t page_size_b = 256;
-        const std::string mf_name;
-        const std::string chip_name;
+        std::string mf_name;
+        std::string chip_name;
     };
 
     struct spi_flash_ids
@@ -33,7 +35,7 @@ namespace fc
         }
     };
 
-    static const std::map<spi_flash_ids, spi_flash_info> fc_spi_chips = {
+    static std::map<spi_flash_ids, spi_flash_info> fc_spi_chips = {
             {
                 { FC_MF_WINBOND_NEX, FC_CHIP_W25Q128 },
                 { 16384, 256, "Winbond", "W25Q128*V" }
