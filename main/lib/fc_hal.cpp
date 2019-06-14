@@ -28,6 +28,31 @@ esp_err_t fc_hal::spi_write(const uint8_t cmd)
     return spi_write(&cmd, 1);
 }
 
+esp_err_t fc_hal::spi_write(uint8_t cmd, uint32_t addr, const uint8_t *tx_payload, size_t tx_len, bool is_4ba)
+{
+    // Tx length must be less than or equals 2
+    if(tx_len > 2) return ESP_ERR_INVALID_ARG;
+    if(is_4ba) {
+        uint8_t buf[7] = { cmd, (uint8_t)(addr >> 24u), (uint8_t)(addr >> 16u),
+                           (uint8_t)(addr >> 8u), (uint8_t)(addr & 0xffU), 0, 0 };
+
+        for(uint8_t idx = 0; idx < tx_len; idx++) {
+            buf[5 + idx] = tx_payload[idx]; // Append two Tx payload, if exists
+        }
+
+        return spi_write(buf, 5 + tx_len);
+    } else {
+        if(addr > 0xfff) return ESP_ERR_INVALID_STATE;
+        uint8_t buf[6] = { cmd, (uint8_t)(addr >> 16u), (uint8_t)(addr >> 8u), (uint8_t)(addr & 0xffU), 0, 0 };
+
+        for(uint8_t idx = 0; idx < tx_len; idx++) {
+            buf[4 + idx] = tx_payload[idx]; // Append two Tx payload, if exists
+        }
+
+        return spi_write(buf, 4 + tx_len);
+    }
+}
+
 esp_err_t fc_hal::spi_read(const uint8_t *tx_payload, size_t tx_len, uint8_t *rx_payload, size_t rx_len)
 {
     spi_transaction_t spi_tract;
@@ -45,6 +70,33 @@ esp_err_t fc_hal::spi_read(const uint8_t reg, uint8_t *rx_payload, size_t rx_len
 {
     return spi_read(&reg, 1, rx_payload, rx_len);
 }
+
+esp_err_t fc_hal::spi_read(uint8_t cmd, uint32_t addr, const uint8_t *tx_payload, size_t tx_len,
+                            uint8_t *rx_payload, size_t rx_len, bool is_4ba)
+{
+    // Tx length must be less than or equals 2
+    if(tx_len > 2) return ESP_ERR_INVALID_ARG;
+    if(is_4ba) {
+        uint8_t buf[7] = { cmd, (uint8_t)(addr >> 24u), (uint8_t)(addr >> 16u),
+                           (uint8_t)(addr >> 8u), (uint8_t)(addr & 0xffU), 0, 0 };
+
+        for(uint8_t idx = 0; idx < tx_len; idx++) {
+            buf[5 + idx] = tx_payload[idx]; // Append two Tx payload, if exists
+        }
+
+        return spi_read(buf, 5 + tx_len, rx_payload, rx_len);
+    } else {
+        if(addr > 0xfff) return ESP_ERR_INVALID_STATE;
+        uint8_t buf[6] = { cmd, (uint8_t)(addr >> 16u), (uint8_t)(addr >> 8u), (uint8_t)(addr & 0xffU), 0, 0 };
+
+        for(uint8_t idx = 0; idx < tx_len; idx++) {
+            buf[4 + idx] = tx_payload[idx]; // Append two Tx payload, if exists
+        }
+
+        return spi_read(buf, 4 + tx_len, rx_payload, rx_len);
+    }
+}
+
 
 fc_hal::fc_hal()
 {
@@ -81,3 +133,4 @@ fc_hal::fc_hal()
     ESP_ERROR_CHECK(spi_bus_add_device(VSPI_HOST, &device_config, &device_handle));
     ESP_LOGI(TAG, "SPI initialization finished, ready to rock!");
 }
+

@@ -2,6 +2,7 @@
 
 #include <cstring>
 #include <cstdint>
+#include <array>
 
 #include <driver/spi_master.h>
 #include <esp_err.h>
@@ -19,8 +20,11 @@ namespace fc
 
             esp_err_t spi_write(const uint8_t *payload, size_t len);
             esp_err_t spi_write(uint8_t cmd);
+            esp_err_t spi_write(uint8_t cmd, uint32_t addr, const uint8_t *tx_payload, size_t tx_len, bool is_4ba);
             esp_err_t spi_read(const uint8_t *tx_payload, size_t tx_len, uint8_t *rx_payload, size_t rx_len);
             esp_err_t spi_read(uint8_t cmd, uint8_t *rx_payload, size_t rx_len);
+            esp_err_t spi_read(uint8_t cmd, uint32_t addr, const uint8_t *tx_payload, size_t tx_len,
+                               uint8_t *rx_payload, size_t rx_len, bool is_4ba);
 
         private:
             fc_hal();
