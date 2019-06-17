@@ -44,7 +44,7 @@ namespace fc
 
             bool get_busy();
             esp_err_t wait_when_busy(uint32_t timeout_ms = 10000);
-            uint32_t get_total_size();
+            size_t get_total_size();
             uint16_t get_page_size();
             esp_err_t get_jedec_id(spi_flash_ids& ids);
             uint64_t get_unique_id();

@@ -1,3 +1,5 @@
+#include <algorithm>
+
 #include <freertos/FreeRTOS.h>
 #include <freertos/task.h>
 
@@ -40,6 +42,19 @@ esp_err_t spi_flash::block_erase_64(uint32_t start_addr, size_t len, uint32_t ti
 
 esp_err_t spi_flash::page_program(uint32_t addr, const uint8_t *payload, size_t len)
 {
+    size_t page_count = len < 256 ? 1 : 1 + (len / 256);
+    auto *payload_ptr = const_cast<uint8_t *>(payload);
+    esp_err_t ret = ESP_OK;
+
+    while(page_count > 0) {
+        while(len > 0) {
+            ret = ret ?: hal.spi_write(cmd_def::PAGE_PROGRAM, addr, payload_ptr, std::min(len, (size_t)256), is_4ba);
+            len -= std::min(len, (size_t)256);
+        }
+
+        page_count--;
+    }
+
     return ESP_OK;
 }
 
@@ -73,14 +88,14 @@ esp_err_t spi_flash::wait_when_busy(uint32_t timeout_ms)
     else return ESP_OK;
 }
 
-uint32_t spi_flash::get_total_size()
+size_t spi_flash::get_total_size()
 {
-    return ESP_OK;
+    return chip_info.full_size_kb;
 }
 
 uint16_t spi_flash::get_page_size()
 {
-    return ESP_OK;
+    return chip_info.page_size_b;
 }
 
 esp_err_t spi_flash::get_jedec_id(spi_flash_ids& ids)
@@ -97,7 +112,7 @@ esp_err_t spi_flash::get_jedec_id(spi_flash_ids& ids)
 
 uint64_t spi_flash::get_unique_id()
 {
-    return ESP_OK;
+
 }
 
 esp_err_t spi_flash::enable_write()
