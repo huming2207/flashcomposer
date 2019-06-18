@@ -16,40 +16,41 @@ spi_flash::spi_flash() : hal(fc_hal::get_hal())
 
 esp_err_t spi_flash::sector_erase(uint32_t start_addr, size_t len, uint32_t timeout_ms)
 {
-    auto cmd = is_4ba ? chip_info.erase_cmds.sector_erase_4ba : chip_info.erase_cmds.sector_erase;
+    auto cmd = is_4ba ? chip_info.mf_cmds.sector_erase_4ba : chip_info.mf_cmds.sector_erase;
     return common_erase(cmd, FC_SPI_FLASH_SECTOR_SIZE, start_addr, len, timeout_ms);
 }
 
 esp_err_t spi_flash::chip_erase(uint32_t timeout_ms)
 {
-    if(chip_info.erase_cmds.chip_erase == 0) return ESP_ERR_NOT_SUPPORTED;
-    esp_err_t ret = hal.spi_write(chip_info.erase_cmds.chip_erase);
+    if(chip_info.mf_cmds.chip_erase == 0) return ESP_ERR_NOT_SUPPORTED;
+    esp_err_t ret = hal.spi_write(chip_info.mf_cmds.chip_erase);
     ret = ret ?: wait_when_busy(timeout_ms);
     return ret;
 }
 
 esp_err_t spi_flash::block_erase_32(uint32_t start_addr, size_t len, uint32_t timeout_ms)
 {
-    auto cmd = is_4ba ? chip_info.erase_cmds.block_erase_32_4ba : chip_info.erase_cmds.block_erase_32;
+    auto cmd = is_4ba ? chip_info.mf_cmds.block_erase_32_4ba : chip_info.mf_cmds.block_erase_32;
     return common_erase(cmd, FC_SPI_FLASH_BLOCK_32_SIZE, start_addr, len, timeout_ms);
 }
 
 esp_err_t spi_flash::block_erase_64(uint32_t start_addr, size_t len, uint32_t timeout_ms)
 {
-    auto cmd = is_4ba ? chip_info.erase_cmds.block_erase_64_4ba : chip_info.erase_cmds.block_erase_64;
+    auto cmd = is_4ba ? chip_info.mf_cmds.block_erase_64_4ba : chip_info.mf_cmds.block_erase_64;
     return common_erase(cmd, FC_SPI_FLASH_BLOCK_64_SIZE, start_addr, len, timeout_ms);
 }
 
 esp_err_t spi_flash::page_program(uint32_t addr, const uint8_t *payload, size_t len)
 {
-    size_t page_count = len < 256 ? 1 : 1 + (len / 256);
+    size_t page_count = len < chip_info.page_size_b ? 1 : 1 + (len / chip_info.page_size_b);
     auto *payload_ptr = const_cast<uint8_t *>(payload);
     esp_err_t ret = ESP_OK;
 
     while(page_count > 0) {
         while(len > 0) {
-            ret = ret ?: hal.spi_write(cmd_def::PAGE_PROGRAM, addr, payload_ptr, std::min(len, (size_t)256), is_4ba);
-            len -= std::min(len, (size_t)256);
+            ret = ret ?: hal.spi_write(cmd_def::PAGE_PROGRAM, addr, payload_ptr,
+                                        std::min(len, (size_t)chip_info.page_size_b), is_4ba);
+            len -= std::min(len, (size_t)chip_info.page_size_b);
         }
 
         page_count--;
@@ -108,11 +109,6 @@ esp_err_t spi_flash::get_jedec_id(spi_flash_ids& ids)
     ids.chip_id = (uint16_t)((uint8_t)(result[1] << 8u) | result[2]); // Cast it to shut up Clang-tidy warning
 
     return ESP_OK;
-}
-
-uint64_t spi_flash::get_unique_id()
-{
-
 }
 
 esp_err_t spi_flash::enable_write()

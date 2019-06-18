@@ -47,8 +47,6 @@ namespace fc
             size_t get_total_size();
             uint16_t get_page_size();
             esp_err_t get_jedec_id(spi_flash_ids& ids);
-            uint64_t get_unique_id();
-
             esp_err_t enable_write();
             esp_err_t chip_pwr_off();
             esp_err_t disable_write();

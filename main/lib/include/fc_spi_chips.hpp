@@ -15,7 +15,7 @@
 
 namespace fc
 {
-    struct spi_flash_erase_cmds
+    struct spi_flash_mf_cmds
     {
         uint8_t sector_erase;
         uint8_t sector_erase_4ba;
@@ -32,7 +32,7 @@ namespace fc
         uint32_t page_size_b = 256;
         std::string mf_name;
         std::string chip_name;
-        spi_flash_erase_cmds erase_cmds;
+        spi_flash_mf_cmds mf_cmds;
     };
 
     struct spi_flash_ids
@@ -51,13 +51,13 @@ namespace fc
         }
     };
 
-    // Per-factory based erase commands: { SE_3BA, SE_4BA, BE32_3BA, BE32_4BA, BE64_3BA, BE64_4BA, CE };
+    // Per-factory based erase commands: { SE_3BA, SE_4BA, BE32_3BA, BE32_4BA, BE64_3BA, BE64_4BA, CE, RUID };
     // Leave commands to 0x00 if not supported
-    const static spi_flash_erase_cmds winbond_erase_cmds        { 0x20, 0x20, 0x52, 0x52, 0xD8, 0xD8, 0xC7 };
-    const static spi_flash_erase_cmds gigadevice_erase_cmds     { 0x20, 0x21, 0x52, 0x5C, 0xD8, 0xDC, 0x60 };
-    const static spi_flash_erase_cmds macronix_erase_cmds       { 0x20, 0x21, 0x52, 0x5C, 0xD8, 0xDC, 0x60 };
-    const static spi_flash_erase_cmds cypress_erase_cmds        { 0x20, 0x21, 0x52, 0x53, 0xD8, 0xDC, 0x60 };
-    const static spi_flash_erase_cmds micron_erase_cmds         { 0x20, 0x21, 0x00, 0x00, 0xD8, 0xDC, 0xC7 };
+    const static spi_flash_mf_cmds winbond_erase_cmds        { 0x20, 0x20, 0x52, 0x52, 0xD8, 0xD8, 0xC7 };
+    const static spi_flash_mf_cmds gigadevice_erase_cmds     { 0x20, 0x21, 0x52, 0x5C, 0xD8, 0xDC, 0x60 };
+    const static spi_flash_mf_cmds macronix_erase_cmds       { 0x20, 0x21, 0x52, 0x5C, 0xD8, 0xDC, 0x60 };
+    const static spi_flash_mf_cmds cypress_erase_cmds        { 0x20, 0x21, 0x52, 0x53, 0xD8, 0xDC, 0x60 };
+    const static spi_flash_mf_cmds micron_erase_cmds         { 0x20, 0x21, 0x00, 0x00, 0xD8, 0xDC, 0xC7 };
 
     // Main definition of SPI Flash chips
     static const std::map<spi_flash_ids, spi_flash_info> fc_spi_chips = {
