@@ -40,12 +40,12 @@ namespace fc
         uint8_t mf_id = 0;
         uint16_t chip_id = 0;
 
-        bool operator==(spi_flash_ids& rhs) const
+        bool operator==(const spi_flash_ids& rhs) const
         {
             return rhs.chip_id == chip_id && rhs.mf_id == mf_id;
         };
 
-        bool operator<(spi_flash_ids& rhs) const
+        bool operator<(const spi_flash_ids& rhs) const
         {
             return mf_id < rhs.mf_id && chip_id < rhs.chip_id;
         }
