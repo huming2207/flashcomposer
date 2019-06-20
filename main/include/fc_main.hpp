@@ -1,6 +1,11 @@
 #pragma once
 
-class fc_main
+namespace fc
 {
+    class fc_main
+    {
+        public:
+            void start_main();
+    };
 
-};
+}

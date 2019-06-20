@@ -4,6 +4,7 @@
 #define FC_MF_WINBOND_NEX               0xEF  // Winbond (Nexcom) W25 series
 #define FC_MF_GIGADEVICE                0xC8  // GigaDevice GD25 series
 #define FC_MF_MACRONIX          		0xC2  // Macronix MX25 series
+#define FC_MF_PUYA                      0x85  // Puya Semiconductor P25 series (re-branded GigaDevice???)
 
 // JEDEC Chip IDs
 #define FC_CHIP_GD25T80                 0x3114
