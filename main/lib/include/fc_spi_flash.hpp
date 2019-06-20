@@ -22,7 +22,7 @@ namespace fc
             BLOCK_ERASE_32_GD   = 0x5CU, // For
             READ_UNIQUE_ID      = 0x4BU,
             READ_MF_DEV_ID      = 0x90U,
-            READ_JEDEC_ID       = 0x92U,
+            READ_JEDEC_ID       = 0x9FU,
             RELEASE_POWER_DOWN  = 0xABU,
             ENTER_4BA           = 0xB7U,
             POWER_DOWN          = 0xB9U,
@@ -47,6 +47,7 @@ namespace fc
             size_t get_total_size();
             uint16_t get_page_size();
             esp_err_t get_jedec_id(spi_flash_ids& ids);
+            spi_flash_info& get_chip_info();
             esp_err_t enable_write();
             esp_err_t chip_pwr_off();
             esp_err_t disable_write();
