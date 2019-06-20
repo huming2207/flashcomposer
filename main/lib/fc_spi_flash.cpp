@@ -107,7 +107,7 @@ esp_err_t spi_flash::get_jedec_id(spi_flash_ids& ids)
     if(ret != ESP_OK) return ret;
 
     ids.mf_id = result[0];
-    ids.chip_id = (uint16_t)((uint8_t)(result[1] << 8u) | result[2]); // Cast it to shut up Clang-tidy warning
+    ids.chip_id = (uint16_t)(result[1] << 8u) | result[2]; // Cast it to shut up Clang-tidy warning
 
     ESP_LOGI(TAG, "Got ID: 0x%x, 0x%x", ids.mf_id, ids.chip_id);
 
@@ -134,11 +134,12 @@ esp_err_t spi_flash::probe_flash()
     spi_flash_ids ids{};
     esp_err_t ret = get_jedec_id(ids);
     if(ret != ESP_OK) return ret;
+    if(ids.chip_id == 0 || ids.mf_id == 0) return ESP_ERR_NOT_FOUND;
 
     try {
         chip_info = fc_spi_chips.at(ids);
     } catch(const std::out_of_range& oor) {
-        return ESP_ERR_NOT_FOUND; //
+        return ESP_ERR_NOT_SUPPORTED; // This chip is not yet supported, if not found in the map
     }
 
     return ESP_OK;
@@ -178,4 +179,13 @@ esp_err_t spi_flash::common_erase(const uint8_t cmd, uint32_t unit, uint32_t sta
 spi_flash_info &spi_flash::get_chip_info()
 {
     return chip_info;
+}
+
+esp_err_t spi_flash::chip_reset()
+{
+    esp_err_t ret = hal.spi_write(cmd_def::ENABLE_RESET);
+    vTaskDelay(pdMS_TO_TICKS(1));
+    ret = ret ?: hal.spi_write(cmd_def::RESET_DEVICE);
+    vTaskDelay(pdMS_TO_TICKS(1));
+    return ret;
 }

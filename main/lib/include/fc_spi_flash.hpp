@@ -18,10 +18,11 @@ namespace fc
             READ_STATUS_REG_1   = 0x05U,
             WRITE_ENABLE        = 0x06U,
             FAST_READ_DATA      = 0x0BU,
-            BLOCK_ERASE_32      = 0x52U,
-            BLOCK_ERASE_32_GD   = 0x5CU, // For
             READ_UNIQUE_ID      = 0x4BU,
+            BLOCK_ERASE_32      = 0x52U,
+            ENABLE_RESET        = 0x66U,
             READ_MF_DEV_ID      = 0x90U,
+            RESET_DEVICE        = 0x99U,
             READ_JEDEC_ID       = 0x9FU,
             RELEASE_POWER_DOWN  = 0xABU,
             ENTER_4BA           = 0xB7U,
@@ -54,6 +55,8 @@ namespace fc
 
             esp_err_t probe_flash();
             esp_err_t override_flash(spi_flash_ids &ids);
+
+            esp_err_t chip_reset();
 
         private:
             fc_hal& hal;
