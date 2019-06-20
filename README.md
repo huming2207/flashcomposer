@@ -1,5 +1,12 @@
-# Hello World Example
+# FlashComposer
 
-Starts a FreeRTOS task to print "Hello World"
+Flash chip reader/burner, built with ESP32, for:
 
-See the README.md file in the upper level 'examples' directory for more information about examples.
+- SPI NOR Flash (aka. "25 series") <- Testing
+- I2C EEPROM (aka "24 series") <- Planned
+- SD card and eMMC Flash <- Planned
+
+
+
+
+
