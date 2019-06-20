@@ -17,10 +17,10 @@ esp_err_t fc_hal::spi_write(const uint8_t *payload, size_t len)
     memset(&spi_tract, 0, sizeof(spi_tract));
 
     spi_tract.tx_buffer = payload;
-    spi_tract.length = len;
+    spi_tract.length = len * 8;
     spi_tract.rxlength = 0;
 
-    return spi_device_transmit(device_handle, &spi_tract);
+    return spi_device_polling_transmit(device_handle, &spi_tract);
 }
 
 esp_err_t fc_hal::spi_write(const uint8_t cmd)
@@ -59,11 +59,11 @@ esp_err_t fc_hal::spi_read(const uint8_t *tx_payload, size_t tx_len, uint8_t *rx
     memset(&spi_tract, 0, sizeof(spi_tract));
 
     spi_tract.tx_buffer = tx_payload;
-    spi_tract.length = tx_len;
+    spi_tract.length = tx_len * 8;
     spi_tract.rx_buffer = rx_payload;
-    spi_tract.rxlength = rx_len;
+    spi_tract.rxlength = rx_len * 8;
 
-    return spi_device_transmit(device_handle, &spi_tract);
+    return spi_device_polling_transmit(device_handle, &spi_tract);
 }
 
 esp_err_t fc_hal::spi_read(const uint8_t reg, uint8_t *rx_payload, size_t rx_len)
@@ -111,14 +111,17 @@ fc_hal::fc_hal()
     vTaskDelay(pdMS_TO_TICKS(10));
 
     spi_bus_config_t bus_config{};
+    memset(&bus_config, 0, sizeof(spi_bus_config_t));
     bus_config.mosi_io_num = CONFIG_FC_SPI_MOSI;
     bus_config.sclk_io_num = CONFIG_FC_SPI_SCLK;
     bus_config.miso_io_num = CONFIG_FC_SPI_MISO;
     bus_config.quadhd_io_num = -1;
     bus_config.quadwp_io_num = -1;
+    bus_config.flags = 0;
     bus_config.max_transfer_sz = 2 * 1024 * 1024; // Maybe 2MB is enough?
 
     spi_device_interface_config_t device_config{};
+    memset(&device_config, 0, sizeof(spi_device_interface_config_t));
 #ifndef CONFIG_FC_SPI_CLK_DEBUG
     device_config.clock_speed_hz = SPI_MASTER_FREQ_40M;
 #else
@@ -126,10 +129,11 @@ fc_hal::fc_hal()
 #endif
     device_config.mode = 0; // CPOL = 0, CPHA = 0???
     device_config.spics_io_num = CONFIG_FC_SPI_CS;
+    device_config.flags = SPI_DEVICE_HALFDUPLEX; // Must use Half Duplex mode, or Rx length must be <= Tx length
     device_config.queue_size = 7;
 
     ESP_LOGI(TAG, "Performing SPI init...");
-    ESP_ERROR_CHECK(spi_bus_initialize(VSPI_HOST, &bus_config, 1));
+    ESP_ERROR_CHECK(spi_bus_initialize(VSPI_HOST, &bus_config, 0));
     ESP_ERROR_CHECK(spi_bus_add_device(VSPI_HOST, &device_config, &device_handle));
     ESP_LOGI(TAG, "SPI initialization finished, ready to rock!");
 }

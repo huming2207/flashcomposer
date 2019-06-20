@@ -2,7 +2,6 @@
 
 #include <cstring>
 #include <cstdint>
-#include <array>
 
 #include <driver/spi_master.h>
 #include <esp_err.h>
