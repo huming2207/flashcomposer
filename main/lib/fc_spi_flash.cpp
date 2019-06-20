@@ -2,6 +2,7 @@
 
 #include <freertos/FreeRTOS.h>
 #include <freertos/task.h>
+#include <esp_log.h>
 
 #include "fc_spi_flash.hpp"
 
@@ -11,7 +12,7 @@ using namespace fc;
 
 spi_flash::spi_flash() : hal(fc_hal::get_hal())
 {
-    probe_flash();
+
 }
 
 esp_err_t spi_flash::sector_erase(uint32_t start_addr, size_t len, uint32_t timeout_ms)
@@ -108,6 +109,8 @@ esp_err_t spi_flash::get_jedec_id(spi_flash_ids& ids)
     ids.mf_id = result[0];
     ids.chip_id = (uint16_t)((uint8_t)(result[1] << 8u) | result[2]); // Cast it to shut up Clang-tidy warning
 
+    ESP_LOGI(TAG, "Got ID: 0x%x, 0x%x", ids.mf_id, ids.chip_id);
+
     return ESP_OK;
 }
 
@@ -132,7 +135,11 @@ esp_err_t spi_flash::probe_flash()
     esp_err_t ret = get_jedec_id(ids);
     if(ret != ESP_OK) return ret;
 
-    chip_info = fc_spi_chips.at(ids);
+    try {
+        chip_info = fc_spi_chips.at(ids);
+    } catch(const std::out_of_range& oor) {
+        return ESP_ERR_NOT_FOUND; //
+    }
 
     return ESP_OK;
 }
@@ -166,4 +173,9 @@ esp_err_t spi_flash::common_erase(const uint8_t cmd, uint32_t unit, uint32_t sta
     }
 
     return ret;
+}
+
+spi_flash_info &spi_flash::get_chip_info()
+{
+    return chip_info;
 }
