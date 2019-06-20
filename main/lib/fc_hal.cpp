@@ -20,7 +20,7 @@ esp_err_t fc_hal::spi_write(const uint8_t *payload, size_t len)
     spi_tract.length = len * 8;
     spi_tract.rxlength = 0;
 
-    return spi_device_polling_transmit(device_handle, &spi_tract);
+    return spi_device_transmit(device_handle, &spi_tract);
 }
 
 esp_err_t fc_hal::spi_write(const uint8_t cmd)
@@ -63,7 +63,7 @@ esp_err_t fc_hal::spi_read(const uint8_t *tx_payload, size_t tx_len, uint8_t *rx
     spi_tract.rx_buffer = rx_payload;
     spi_tract.rxlength = rx_len * 8;
 
-    return spi_device_polling_transmit(device_handle, &spi_tract);
+    return spi_device_transmit(device_handle, &spi_tract);
 }
 
 esp_err_t fc_hal::spi_read(const uint8_t reg, uint8_t *rx_payload, size_t rx_len)
