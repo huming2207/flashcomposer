@@ -17,6 +17,7 @@
 #define FC_CHIP_GD25Q32	                0x4016
 #define FC_CHIP_GD25Q64	                0x4017
 #define FC_CHIP_GD25Q128	            0x4018
+#define FC_CHIP_GD25Q256                0x4019
 #define FC_CHIP_GD25VQ21B	            0x4212
 #define FC_CHIP_GD25VQ41B	            0x4213
 #define FC_CHIP_GD25VQ80C	            0x4214
@@ -37,7 +38,7 @@
 #define FC_CHIP_MX25L3205	            0x2016
 #define FC_CHIP_MX25L6405	            0x2017
 #define FC_CHIP_MX25L12805D	            0x2018
-#define FC_CHIP_MX25L25635F	            0x2019
+#define FC_CHIP_MX25L256	            0x2019
 #define FC_CHIP_MX25L1635D	            0x2415
 #define FC_CHIP_MX25L1635E	            0x2515
 #define FC_CHIP_MX66L51235F	            0x201A
