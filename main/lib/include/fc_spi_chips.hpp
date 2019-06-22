@@ -53,73 +53,73 @@ namespace fc
 
     // Per-factory based erase commands: { SE_3BA, SE_4BA, BE32_3BA, BE32_4BA, BE64_3BA, BE64_4BA, CE, RUID };
     // Leave commands to 0x00 if not supported
-    const static spi_flash_mf_cmds winbond_erase_cmds        { 0x20, 0x20, 0x52, 0x52, 0xD8, 0xD8, 0xC7 };
-    const static spi_flash_mf_cmds gigadevice_erase_cmds     { 0x20, 0x21, 0x52, 0x5C, 0xD8, 0xDC, 0x60 };
-    const static spi_flash_mf_cmds macronix_erase_cmds       { 0x20, 0x21, 0x52, 0x5C, 0xD8, 0xDC, 0x60 };
-    const static spi_flash_mf_cmds cypress_erase_cmds        { 0x20, 0x21, 0x52, 0x53, 0xD8, 0xDC, 0x60 };
-    const static spi_flash_mf_cmds micron_erase_cmds         { 0x20, 0x21, 0x00, 0x00, 0xD8, 0xDC, 0xC7 };
+    const static spi_flash_mf_cmds winbond_cmds      { 0x20, 0x20, 0x52, 0x52, 0xD8, 0xD8, 0xC7 };
+    const static spi_flash_mf_cmds gigadevice_cmds   { 0x20, 0x21, 0x52, 0x5C, 0xD8, 0xDC, 0x60 };
+    const static spi_flash_mf_cmds macronix_cmds     { 0x20, 0x21, 0x52, 0x5C, 0xD8, 0xDC, 0x60 };
+    const static spi_flash_mf_cmds cypress_cmds      { 0x20, 0x21, 0x52, 0x53, 0xD8, 0xDC, 0x60 };
+    const static spi_flash_mf_cmds micron_cmds       { 0x20, 0x21, 0x00, 0x00, 0xD8, 0xDC, 0xC7 };
 
     // Main definition of SPI Flash chips
     static const std::map<spi_flash_ids, spi_flash_info> fc_spi_chips = {
             {
                     { FC_MF_WINBOND_NEX, FC_CHIP_W25Q80 },
-                    { 1024, 256, "Winbond", "W25Q80", winbond_erase_cmds }
+                    { 1024, 256, "Winbond", "W25Q80", winbond_cmds }
             },
             {
                     { FC_MF_WINBOND_NEX, FC_CHIP_W25Q16 },
-                    { 2048, 256, "Winbond", "W25Q16", winbond_erase_cmds }
+                    { 2048, 256, "Winbond", "W25Q16", winbond_cmds }
             },
             {
                     { FC_MF_WINBOND_NEX, FC_CHIP_W25Q32 },
-                    { 4096, 256, "Winbond", "W25Q32", winbond_erase_cmds }
+                    { 4096, 256, "Winbond", "W25Q32", winbond_cmds }
             },
             {
                     { FC_MF_WINBOND_NEX, FC_CHIP_W25Q64 },
-                    { 8192, 256, "Winbond", "W25Q64", winbond_erase_cmds }
+                    { 8192, 256, "Winbond", "W25Q64", winbond_cmds }
             },
             {
                     { FC_MF_WINBOND_NEX, FC_CHIP_W25Q128 },
-                    { 16384, 256, "Winbond", "W25Q128*V", winbond_erase_cmds }
+                    { 16384, 256, "Winbond", "W25Q128*V", winbond_cmds }
             },
             {
                     { FC_MF_WINBOND_NEX, FC_CHIP_W25Q256 },
-                    { 32768, 256, "Winbond", "W25Q256*V", winbond_erase_cmds }
+                    { 32768, 256, "Winbond", "W25Q256*V", winbond_cmds }
             },
             {
                     { FC_MF_MACRONIX, FC_CHIP_MX25L1605 },
-                    { 2048, 256, "Macronix", "MX25L16", macronix_erase_cmds }
+                    { 2048, 256, "Macronix", "MX25L16", macronix_cmds }
             },
             {
                     { FC_MF_MACRONIX, FC_CHIP_MX25L3205 },
-                    { 4096, 256, "Macronix", "MX25L32", macronix_erase_cmds }
+                    { 4096, 256, "Macronix", "MX25L32", macronix_cmds }
             },
             {
                     { FC_MF_MACRONIX, FC_CHIP_MX25L6405 },
-                    { 8192, 256, "Macronix", "MX25L64", macronix_erase_cmds }
+                    { 8192, 256, "Macronix", "MX25L64", macronix_cmds }
             },
             {
                     { FC_MF_MACRONIX, FC_CHIP_MX25L12805D },
-                    { 16384, 256, "Macronix", "MX25L128", macronix_erase_cmds }
+                    { 16384, 256, "Macronix", "MX25L128", macronix_cmds }
             },
             {
                     { FC_MF_MACRONIX, FC_CHIP_MX25L256 },
-                    { 32768, 256, "Macronix", "MX25L256", macronix_erase_cmds }
+                    { 32768, 256, "Macronix", "MX25L256", macronix_cmds }
             },
             {
                     { FC_MF_GIGADEVICE, FC_CHIP_GD25Q32 },
-                    { 4096, 256, "GigaDevice", "GD25Q32", gigadevice_erase_cmds }
+                    { 4096, 256, "GigaDevice", "GD25Q32", gigadevice_cmds }
             },
             {
                     { FC_MF_GIGADEVICE, FC_CHIP_GD25Q64 },
-                    { 8192, 256, "GigaDevice", "GD25Q64", gigadevice_erase_cmds }
+                    { 8192, 256, "GigaDevice", "GD25Q64", gigadevice_cmds }
             },
             {
                     { FC_MF_GIGADEVICE, FC_CHIP_GD25Q128 },
-                    { 16384, 256, "GigaDevice", "GD25Q128", gigadevice_erase_cmds }
+                    { 16384, 256, "GigaDevice", "GD25Q128", gigadevice_cmds }
             },
             {
                     { FC_MF_GIGADEVICE, FC_CHIP_GD25Q256 },
-                    { 32768, 256, "GigaDevice", "GD25Q256", gigadevice_erase_cmds }
+                    { 32768, 256, "GigaDevice", "GD25Q256", gigadevice_cmds }
             }
 
     };

@@ -18,6 +18,8 @@ namespace fc
             READ_STATUS_REG_1   = 0x05U,
             WRITE_ENABLE        = 0x06U,
             FAST_READ_DATA      = 0x0BU,
+            FAST_READ_DATA_4BA  = 0x0CU,
+            READ_DATA_4BA       = 0x13U,
             READ_UNIQUE_ID      = 0x4BU,
             BLOCK_ERASE_32      = 0x52U,
             ENABLE_RESET        = 0x66U,

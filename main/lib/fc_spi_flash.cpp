@@ -63,7 +63,13 @@ esp_err_t spi_flash::page_program(uint32_t addr, const uint8_t *payload, size_t 
 esp_err_t spi_flash::byte_read(uint32_t addr, uint8_t *rx_payload, size_t len, bool fast_read = true)
 {
     // FAST_READ needs an extra dummy byte
-    auto cmd = fast_read ? cmd_def::FAST_READ_DATA : cmd_def::READ_DATA;
+    uint8_t cmd = 0;
+
+    if(is_4ba)
+        cmd = fast_read ? cmd_def::FAST_READ_DATA_4BA : cmd_def::READ_DATA_4BA;
+    else
+        cmd = fast_read ? cmd_def::FAST_READ_DATA : cmd_def::READ_DATA;
+
     const uint8_t dummy = 0;
     return hal.spi_read(cmd, addr, &dummy, fast_read ? 1 : 0, rx_payload, len, is_4ba);
 }
