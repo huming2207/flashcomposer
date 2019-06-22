@@ -43,8 +43,12 @@ esp_err_t spi_flash::block_erase_64(uint32_t start_addr, size_t len, uint32_t ti
 
 esp_err_t spi_flash::page_program(uint32_t addr, const uint8_t *payload, size_t len)
 {
+    // Page program is different from other read/erase functions.
+    // The LSB address must starts with 0 (beginning of each page) or it is very likely to be rounded.
+    // As a result, we cannot use half-duplex SPI on ESP32 as it has 64 bytes maximum payload length limit.
     size_t page_count = len < chip_info.page_size_b ? 1 : 1 + (len / chip_info.page_size_b);
-    esp_err_t ret = ESP_OK;
+    esp_err_t ret = hal.spi_set_full_duplex();
+    if(ret != ESP_OK) return ret;
 
     while(page_count > 0) {
         while(len > 0) {
@@ -58,7 +62,9 @@ esp_err_t spi_flash::page_program(uint32_t addr, const uint8_t *payload, size_t 
         page_count--;
     }
 
-    return ESP_OK;
+    if(ret != ESP_OK) return ret;
+
+    return hal.spi_set_half_duplex();
 }
 
 esp_err_t spi_flash::byte_read(uint32_t addr, uint8_t *rx_payload, size_t len, bool fast_read = true)
@@ -72,7 +78,16 @@ esp_err_t spi_flash::byte_read(uint32_t addr, uint8_t *rx_payload, size_t len, b
         cmd = fast_read ? cmd_def::FAST_READ_DATA : cmd_def::READ_DATA;
 
     const uint8_t dummy = 0;
-    return hal.spi_read(cmd, addr, &dummy, fast_read ? 1 : 0, rx_payload, len, is_4ba);
+    auto ret = ESP_OK;
+
+    while(len > 0) {
+        ret = ret ?: hal.spi_read(cmd, addr, &dummy, fast_read ? 1 : 0, rx_payload, len, is_4ba);
+        auto offset = std::min(len, (size_t)64); // In half duplex mode, no support for
+        rx_payload += offset;
+        len -= offset;
+    }
+
+    return ret;
 }
 
 bool spi_flash::get_busy()
