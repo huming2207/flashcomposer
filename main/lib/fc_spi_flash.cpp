@@ -44,14 +44,15 @@ esp_err_t spi_flash::block_erase_64(uint32_t start_addr, size_t len, uint32_t ti
 esp_err_t spi_flash::page_program(uint32_t addr, const uint8_t *payload, size_t len)
 {
     size_t page_count = len < chip_info.page_size_b ? 1 : 1 + (len / chip_info.page_size_b);
-    auto *payload_ptr = const_cast<uint8_t *>(payload);
     esp_err_t ret = ESP_OK;
 
     while(page_count > 0) {
         while(len > 0) {
-            ret = ret ?: hal.spi_write(cmd_def::PAGE_PROGRAM, addr, payload_ptr,
+            ret = ret ?: hal.spi_write(cmd_def::PAGE_PROGRAM, addr, payload,
                                         std::min(len, (size_t)chip_info.page_size_b), is_4ba);
-            len -= std::min(len, (size_t)chip_info.page_size_b);
+            auto offset = std::min(len, (size_t)chip_info.page_size_b);
+            payload += offset;
+            len -= offset;
         }
 
         page_count--;
