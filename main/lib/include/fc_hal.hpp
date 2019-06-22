@@ -25,9 +25,15 @@ namespace fc
             esp_err_t spi_read(uint8_t cmd, uint32_t addr, const uint8_t *tx_payload, size_t tx_len,
                                uint8_t *rx_payload, size_t rx_len, bool is_4ba);
 
+            esp_err_t spi_set_full_duplex();
+            esp_err_t spi_set_half_duplex();
+
         private:
             fc_hal();
-            spi_device_handle_t device_handle = nullptr;
+            spi_bus_config_t spi_bus_config{};
+            spi_device_handle_t spi_dev_handle = nullptr;
+            spi_device_interface_config_t spi_dev_conf_hd{};
+            spi_device_interface_config_t spi_dev_conf_fd{};
 
         public:
             fc_hal(fc_hal const &) = delete;
