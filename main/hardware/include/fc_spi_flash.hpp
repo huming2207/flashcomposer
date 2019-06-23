@@ -52,7 +52,8 @@ namespace fc
             esp_err_t get_jedec_id(spi_flash_ids& ids);
             spi_flash_info& get_chip_info();
             esp_err_t enable_write();
-            esp_err_t chip_pwr_off();
+            esp_err_t chip_sleep();
+            esp_err_t chip_wake();
             esp_err_t disable_write();
 
             esp_err_t probe_flash();

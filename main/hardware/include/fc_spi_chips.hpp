@@ -9,7 +9,8 @@
 
 #include "fc_id_defs.hpp"
 
-#define FC_SPI_FLASH_PAGE_SIZE_BYTE     256
+// Common JEDEC standard SPI NOR Flash size values in bytes
+#define FC_SPI_FLASH_PAGE_SIZE          256
 #define FC_SPI_FLASH_SECTOR_SIZE        4096
 #define FC_SPI_FLASH_BLOCK_32_SIZE      32768
 #define FC_SPI_FLASH_BLOCK_64_SIZE      65536
