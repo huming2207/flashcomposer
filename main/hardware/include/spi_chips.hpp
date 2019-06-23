@@ -7,7 +7,7 @@
 #include <algorithm>
 #include <map>
 
-#include "fc_id_defs.hpp"
+#include "spi_flash_ids.hpp"
 
 // Common JEDEC standard SPI NOR Flash size values in bytes
 #define FC_SPI_FLASH_PAGE_SIZE          256
@@ -15,8 +15,9 @@
 #define FC_SPI_FLASH_BLOCK_32_SIZE      32768
 #define FC_SPI_FLASH_BLOCK_64_SIZE      65536
 
-namespace fc
-{    struct spi_flash_mf_cmds
+namespace fc::hardware
+{
+    struct spi_flash_mf_cmds
     {
         uint8_t sector_erase;
         uint8_t sector_erase_4ba;
@@ -123,4 +124,4 @@ namespace fc
             }
 
     };
-};
+}

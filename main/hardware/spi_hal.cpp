@@ -5,13 +5,13 @@
 #include <driver/gpio.h>
 #include <driver/spi_master.h>
 
-#include "fc_hal.hpp"
+#include "spi_hal.hpp"
 
 #define TAG "fc_hal"
 
-using namespace fc;
+using namespace fc::hardware;
 
-esp_err_t fc_hal::spi_write(const uint8_t *payload, size_t len)
+esp_err_t spi_hal::spi_write(const uint8_t *payload, size_t len)
 {
     spi_transaction_t spi_tract;
     memset(&spi_tract, 0, sizeof(spi_tract));
@@ -23,12 +23,12 @@ esp_err_t fc_hal::spi_write(const uint8_t *payload, size_t len)
     return spi_device_transmit(spi_dev_handle, &spi_tract);
 }
 
-esp_err_t fc_hal::spi_write(const uint8_t cmd)
+esp_err_t spi_hal::spi_write(const uint8_t cmd)
 {
     return spi_write(&cmd, 1);
 }
 
-esp_err_t fc_hal::spi_write(uint8_t cmd, uint32_t addr, const uint8_t *tx_payload, size_t tx_len, bool is_4ba)
+esp_err_t spi_hal::spi_write(uint8_t cmd, uint32_t addr, const uint8_t *tx_payload, size_t tx_len, bool is_4ba)
 {
     // Tx length must be less than or equals 2
     if(tx_len > 2) return ESP_ERR_INVALID_ARG;
@@ -53,7 +53,7 @@ esp_err_t fc_hal::spi_write(uint8_t cmd, uint32_t addr, const uint8_t *tx_payloa
     }
 }
 
-esp_err_t fc_hal::spi_read(const uint8_t *tx_payload, size_t tx_len, uint8_t *rx_payload, size_t rx_len)
+esp_err_t spi_hal::spi_read(const uint8_t *tx_payload, size_t tx_len, uint8_t *rx_payload, size_t rx_len)
 {
     spi_transaction_t spi_tract;
     memset(&spi_tract, 0, sizeof(spi_tract));
@@ -66,12 +66,12 @@ esp_err_t fc_hal::spi_read(const uint8_t *tx_payload, size_t tx_len, uint8_t *rx
     return spi_device_transmit(spi_dev_handle, &spi_tract);
 }
 
-esp_err_t fc_hal::spi_read(const uint8_t reg, uint8_t *rx_payload, size_t rx_len)
+esp_err_t spi_hal::spi_read(const uint8_t reg, uint8_t *rx_payload, size_t rx_len)
 {
     return spi_read(&reg, 1, rx_payload, rx_len);
 }
 
-esp_err_t fc_hal::spi_read(uint8_t cmd, uint32_t addr, const uint8_t *tx_payload, size_t tx_len,
+esp_err_t spi_hal::spi_read(uint8_t cmd, uint32_t addr, const uint8_t *tx_payload, size_t tx_len,
                             uint8_t *rx_payload, size_t rx_len, bool is_4ba)
 {
     // Tx length must be less than or equals 2
@@ -97,7 +97,7 @@ esp_err_t fc_hal::spi_read(uint8_t cmd, uint32_t addr, const uint8_t *tx_payload
     }
 }
 
-esp_err_t fc_hal::spi_set_full_duplex()
+esp_err_t spi_hal::spi_set_full_duplex()
 {
     ESP_LOGI(TAG, "Freeing SPI device...");
     auto ret = spi_bus_remove_device(spi_dev_handle);
@@ -121,7 +121,7 @@ esp_err_t fc_hal::spi_set_full_duplex()
     return ESP_OK;
 }
 
-esp_err_t fc_hal::spi_set_half_duplex()
+esp_err_t spi_hal::spi_set_half_duplex()
 {
     ESP_LOGI(TAG, "Freeing SPI device...");
     auto ret = spi_bus_remove_device(spi_dev_handle);
@@ -145,7 +145,7 @@ esp_err_t fc_hal::spi_set_half_duplex()
     return ESP_OK;
 }
 
-fc_hal::fc_hal()
+spi_hal::spi_hal()
 {
     ESP_LOGI(TAG, "Initialising GPIO...");
     ESP_LOGI(TAG, "Performing GPIO init...");

@@ -3,10 +3,10 @@
 #include <cstdint>
 
 #include <esp_err.h>
-#include "fc_hal.hpp"
-#include "fc_spi_chips.hpp"
+#include "spi_hal.hpp"
+#include "spi_chips.hpp"
 
-namespace fc
+namespace fc::hardware
 {
     namespace cmd_def
     {
@@ -30,7 +30,7 @@ namespace fc
             ENTER_4BA           = 0xB7U,
             POWER_DOWN          = 0xB9U,
             EXIT_4BA            = 0xE9U
-        } spi_flash_cmd;
+        } spi_flash_cmds;
     }
 
     class spi_flash
@@ -62,7 +62,7 @@ namespace fc
             esp_err_t chip_reset();
 
         private:
-            fc_hal& hal;
+            spi_hal& hal;
             bool is_4ba = false;
             spi_flash_info chip_info{};
             esp_err_t enter_4ba_mode();

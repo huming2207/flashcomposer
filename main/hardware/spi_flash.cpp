@@ -4,13 +4,13 @@
 #include <freertos/task.h>
 #include <esp_log.h>
 
-#include "fc_spi_flash.hpp"
+#include "spi_flash.hpp"
 
 #define TAG "spi_flash"
 
-using namespace fc;
+using namespace fc::hardware;
 
-spi_flash::spi_flash() : hal(fc_hal::get_hal())
+spi_flash::spi_flash() : hal(spi_hal::get_hal())
 {
 
 }
