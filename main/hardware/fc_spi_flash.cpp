@@ -46,15 +46,15 @@ esp_err_t spi_flash::page_program(uint32_t addr, const uint8_t *payload, size_t 
     // Page program is different from other read/erase functions.
     // The LSB address must starts with 0 (beginning of each page) or it is very likely to be rounded.
     // As a result, we cannot use half-duplex SPI on ESP32 as it has 64 bytes maximum payload length limit.
-    size_t page_count = len < chip_info.page_size_b ? 1 : 1 + (len / chip_info.page_size_b);
+    size_t page_count = len < FC_SPI_FLASH_PAGE_SIZE_BYTE ? 1 : 1 + (len / FC_SPI_FLASH_PAGE_SIZE_BYTE);
     esp_err_t ret = hal.spi_set_full_duplex();
     if(ret != ESP_OK) return ret;
 
     while(page_count > 0) {
         while(len > 0) {
             ret = ret ?: hal.spi_write(cmd_def::PAGE_PROGRAM, addr, payload,
-                                        std::min(len, (size_t)chip_info.page_size_b), is_4ba);
-            auto offset = std::min(len, (size_t)chip_info.page_size_b);
+                                        std::min(len, (size_t)FC_SPI_FLASH_PAGE_SIZE_BYTE), is_4ba);
+            auto offset = std::min(len, (size_t)FC_SPI_FLASH_PAGE_SIZE_BYTE);
             payload += offset;
             len -= offset;
         }
@@ -119,7 +119,7 @@ size_t spi_flash::get_total_size()
 
 uint16_t spi_flash::get_page_size()
 {
-    return chip_info.page_size_b;
+    return FC_SPI_FLASH_PAGE_SIZE_BYTE;
 }
 
 esp_err_t spi_flash::get_jedec_id(spi_flash_ids& ids)
