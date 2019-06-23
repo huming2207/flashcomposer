@@ -3,7 +3,7 @@
 #include <esp_err.h>
 #include <esp_http_server.h>
 
-namespace fc
+namespace fc::web
 {
     class rest_spi_handler
     {

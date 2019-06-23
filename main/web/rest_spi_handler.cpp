@@ -2,9 +2,9 @@
 #include <esp_http_server.h>
 #include <esp_log.h>
 
-#include "fc_rest_spi_handler.hpp"
+#include "rest_spi_handler.hpp"
 
-using namespace fc;
+using namespace fc::web;
 
 rest_spi_handler::rest_spi_handler(httpd_handle_t handle)
 {

@@ -5,7 +5,9 @@
 
 #include "fc_main.hpp"
 
-#include "fc_spi_flash.hpp"
+#include "spi_flash.hpp"
+
+#include <ArduinoJson.h>
 
 #define TAG "fc_main"
 
@@ -23,7 +25,7 @@ void app_main()
 
 void fc_main::start_main()
 {
-    spi_flash flash;
+    hardware::spi_flash flash;
     esp_err_t ret = flash.chip_reset();
     ret = ret ?: flash.probe_flash();
     while(ret != ESP_OK && ret != ESP_ERR_NOT_SUPPORTED) {
@@ -40,5 +42,4 @@ void fc_main::start_main()
 
     ESP_LOGI(TAG, "Detected %s %s, size %u KB",
             chip_info.mf_name.c_str(), chip_info.chip_name.c_str(), chip_info.full_size_kb);
-
 }

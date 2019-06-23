@@ -5,7 +5,7 @@
 #define FC_WEB_MDNS_NAME    "FlashComposer Web Service"
 #define FC_WEB_MDNS_HOST    "flashcomposer"
 
-namespace fc
+namespace fc::web
 {
     class rest_service
     {

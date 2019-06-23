@@ -1,9 +1,10 @@
 #include <esp_log.h>
 #include <mdns.h>
-#include "fc_rest_service.hpp"
+#include "rest_service.hpp"
 
 #define TAG "rest_service"
-using namespace fc;
+
+using namespace fc::web;
 
 rest_service::rest_service()
 {
@@ -45,7 +46,4 @@ void rest_service::init_httpd()
     ESP_ERROR_CHECK(httpd_start(&httpd_handle, &httpd_config));
 
     ESP_LOGI(TAG, "Adding handlers...");
-    auto func = [](httpd_req_t req) -> esp_err_t {
-        return ESP_OK;
-    };
 }
