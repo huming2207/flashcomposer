@@ -16,8 +16,7 @@
 #define FC_SPI_FLASH_BLOCK_64_SIZE      65536
 
 namespace fc
-{
-    struct spi_flash_mf_cmds
+{    struct spi_flash_mf_cmds
     {
         uint8_t sector_erase;
         uint8_t sector_erase_4ba;
@@ -43,12 +42,12 @@ namespace fc
 
         bool operator==(const spi_flash_ids& rhs) const
         {
-            return rhs.chip_id == chip_id && rhs.mf_id == mf_id;
+            return std::tie(mf_id, chip_id) == std::tie(rhs.mf_id, rhs.chip_id);
         };
 
         bool operator<(const spi_flash_ids& rhs) const
         {
-            return mf_id < rhs.mf_id && chip_id < rhs.chip_id;
+            return std::tie(mf_id, chip_id) < std::tie(rhs.mf_id, rhs.chip_id);
         }
     };
 
