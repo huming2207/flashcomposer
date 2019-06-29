@@ -51,7 +51,7 @@ namespace fc::sys
             esp_err_t start_ap();
             esp_err_t start_sta();
             esp_err_t set_ap_config(const std::string &ssid, const std::string &passwd, uint8_t channel = 3);
-            esp_err_t set_sta_config(const std::string& ssid, const std::string& passwd);
+            esp_err_t set_sta_config(const std::string& ssid, const std::string& passwd, bool fast_scan = false);
             esp_err_t clear_wifi_config();
     };
 }

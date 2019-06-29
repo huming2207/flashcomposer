@@ -8,7 +8,6 @@
 #include "spi_flash.hpp"
 
 #include <ArduinoJson.h>
-#include <nvs_flash.h>
 #include <wifi_manager.hpp>
 
 #define TAG "fc_main"
