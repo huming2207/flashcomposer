@@ -9,6 +9,10 @@
 #include <nvs_flash.h>
 #include <esp_log.h>
 #include <esp_err.h>
+#include <lwip/err.h>
+#include <lwip/sys.h>
+#include <lwip/ip_addr.h>
+#include <lwip/ip6_addr.h>
 
 namespace fc::sys
 {
@@ -49,8 +53,6 @@ namespace fc::sys
             esp_err_t set_ap_config(const std::string &ssid, const std::string &passwd, uint8_t channel = 3);
             esp_err_t set_sta_config(const std::string& ssid, const std::string& passwd);
             esp_err_t clear_wifi_config();
-
     };
-
 }
 

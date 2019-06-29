@@ -3,14 +3,17 @@
 #include <esp_system.h>
 #include <esp_wifi.h>
 
-#include "lwip/err.h"
-#include "lwip/sys.h"
-
 #include "wifi_manager.hpp"
 
 #define TAG "wifi_mgr"
 
 using namespace fc::sys;
+
+uint8_t wifi_manager::sta_max_retry = 0;
+ip_addr_t wifi_manager::ip_addr = {};
+ip6_addr_t wifi_manager::ip6_addr = {};
+uint8_t wifi_manager::sta_retry_cnt = 0;
+EventGroupHandle_t wifi_manager::wifi_event_group = nullptr;
 
 wifi_manager::wifi_manager()
 {
@@ -57,7 +60,7 @@ wifi_manager::wifi_manager()
 
             } else if (event_base == WIFI_EVENT && event_id == WIFI_EVENT_STA_DISCONNECTED) {
 
-               if (wifi_manager::sta_retry_cnt < wifi_manager::sta_max_retry) {
+               if (sta_retry_cnt < wifi_manager::sta_max_retry) {
                    esp_wifi_connect();
                    xEventGroupClearBits(wifi_manager::wifi_event_group, sysdef::WIFI_STA_CONNECTED);
                    wifi_manager::sta_max_retry++;
@@ -72,7 +75,7 @@ wifi_manager::wifi_manager()
                auto* event = (ip_event_got_ip_t*) event_data;
                ESP_LOGI(TAG, "Got IPv4 from AP: %s", ip4addr_ntoa(&event->ip_info.ip));
                std::memcpy(&wifi_manager::ip_addr, &event->ip_info.ip, sizeof(ip_addr_t));
-               wifi_manager::sta_retry_cnt = 0;
+               sta_retry_cnt = 0;
                xEventGroupSetBits(wifi_manager::wifi_event_group, sysdef::WIFI_STA_CONNECTED);
 
             } else if (event_base == IP_EVENT && event_id == IP_EVENT_GOT_IP6) {
@@ -80,7 +83,7 @@ wifi_manager::wifi_manager()
                auto* event = (ip_event_got_ip6_t*) event_data;
                ESP_LOGI(TAG, "Got IPv6 from AP: %s", ip6addr_ntoa(&event->ip6_info.ip));
                std::memcpy(&wifi_manager::ip6_addr, &event->ip6_info.ip, sizeof(ip6_addr_t));
-               wifi_manager::sta_retry_cnt = 0;
+               sta_retry_cnt = 0;
                xEventGroupSetBits(wifi_manager::wifi_event_group, sysdef::WIFI_STA_CONNECTED);
 
             }
@@ -112,12 +115,13 @@ esp_err_t wifi_manager::start_sta()
     return ret;
 }
 
-esp_err_t wifi_manager::set_ap_config(const std::string &ssid, const std::string &passwd, uint8_t channel = 3)
+esp_err_t wifi_manager::set_ap_config(const std::string &ssid, const std::string &passwd, uint8_t channel)
 {
     wifi_config_t wifi_config{};
     wifi_config.ap.authmode = passwd.empty() ? WIFI_AUTH_OPEN : WIFI_AUTH_WPA2_PSK;
     wifi_config.ap.beacon_interval = 100;
     wifi_config.ap.channel = channel;
+    wifi_config.ap.max_connection = 4;
     std::strcpy(reinterpret_cast<char *>(wifi_config.sta.ssid), ssid.c_str());
     std::strcpy(reinterpret_cast<char *>(wifi_config.sta.password), passwd.c_str());
     wifi_config.ap.ssid_len = ssid.size();
