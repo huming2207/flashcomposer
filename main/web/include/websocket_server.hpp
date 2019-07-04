@@ -29,7 +29,7 @@ namespace fc::web
             opcode type:4;
             bool mask:1;
             uint8_t payload_len:7;
-            uint64_t extra_len:64;
+            uint8_t extra_len[8];
         } header;
     }
 
