@@ -1,0 +1,3 @@
+[submodule "components/starrynet"]
+	path = components/starrynet
+	url = git@github.com:huming2207/StarryNet.git
